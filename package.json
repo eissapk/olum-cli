@@ -1,0 +1,20 @@
+{
+  "name": "pk-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "cli.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "colors": "^1.4.0",
+    "commander": "^7.2.0",
+    "fs-extra": "^9.1.0",
+    "shelljs": "^0.8.4"
+  },
+  "bin": {
+    "execute": "cli.js"
+  }
+}
