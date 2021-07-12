@@ -7,7 +7,7 @@ const path = require("path");
 const colors = require("colors");
 const shell = require("shelljs");
 
-// ./pk.js create my-app
+// ./olum.js create my-app
 class CLI {
   template = path.resolve(__dirname, "./template");
   
@@ -15,7 +15,7 @@ class CLI {
     cmd
       .command("create")
       .arguments("<name>")
-      .description("Create PKjs app")
+      .description("Create Olumjs app")
       // .option('-d, --debug', 'debug mode')
       .action(this.create.bind(this));
 
@@ -40,7 +40,7 @@ class CLI {
   clone(name) {
     return new Promise((resolve, reject) => {
       extra.copy(this.template, `./${name}`, err => {
-        if (err) reject("Error while cloning PK template \n" + err);
+        if (err) reject("Error while cloning Olum template \n" + err);
         console.log(colors.green.bold(`Cloned "${this.template}" to current directory.`));
         resolve();
       });

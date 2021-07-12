@@ -1,20 +1,32 @@
 {
-  "name": "pk-cli",
-  "version": "1.0.0",
-  "description": "",
-  "main": "cli.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "@olum/cli",
+  "version": "0.0.1",
+  "description": "Olumjs cli tool",
+  "main": "index.js",
+  "directories": {},
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eissapk/olum-cli.git"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "npm",
+    "olum",
+    "cli"
+  ],
+  "author": "Eissa Saber",
+  "license": "MIT",
   "devDependencies": {
     "colors": "^1.4.0",
     "commander": "^7.2.0",
     "fs-extra": "^9.1.0",
     "shelljs": "^0.8.4"
   },
+  "bugs": {
+    "url": "https://github.com/eissapk/olum-cli/issues"
+  },
+  "homepage": "https://github.com/eissapk/olum-cli#readme",
   "bin": {
-    "execute": "cli.js"
+    "execute": "index.js"
   }
 }
