@@ -1,0 +1,30 @@
+<template>
+  <div class="Home">
+    <HelloWorld />
+  </div>
+</template>
+
+<script>
+  import HelloWorld from "../components/helloworld";
+  export default class Home {
+    data() {
+      return {
+        name: "Home",
+        components: { HelloWorld },
+        template: this.template(),
+        style: this.style(),
+        render: this.render.bind(this),
+      };
+    }
+
+    render() {}
+  }
+</script>
+
+<style lang="scss">
+  .Home {
+    width: 100vw;
+    height: 100vh;
+    background-color: #2b2a3e;
+  }
+</style>
