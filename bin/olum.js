@@ -1,47 +1,35 @@
 #!/usr/bin/env node
 const commander = require("commander");
 const cmd = new commander.Command();
-const fs = require("fs");
 const extra = require("fs-extra");
 const path = require("path");
 const colors = require("colors");
 const shell = require("shelljs");
 
-// ./olum.js create my-app
 class CLI {
-  template = path.resolve(__dirname, "./template");
-  
   constructor() {
-    cmd
-      .command("create")
-      .arguments("<name>")
-      .description("Create Olumjs app")
-      // .option('-d, --debug', 'debug mode')
-      .action(this.create.bind(this));
-
+    cmd.command("create").arguments("<name>").action(this.create.bind(this));
     cmd.parse(process.argv);
   }
 
   async create(name) {
-    // if (cmd.opts().debug) console.log("debug options");
-
     try {
       await this.clone(name);
       await this.git(name);
       await this.dep(name);
-      console.log(colors.blue.white("Build: npm run build\n"+"DevServer: npm run dev"));
+      console.log(colors.blue("Build: npm run build\n" + "DevServer: npm run dev"));
       console.log(colors.cyan("cd " + name));
     } catch (err) {
       console.error(colors.red(err));
     }
-
   }
 
   clone(name) {
+    const template = path.resolve(__dirname, "../template");
     return new Promise((resolve, reject) => {
-      extra.copy(this.template, `./${name}`, err => {
+      extra.copy(template, `./${name}`, err => {
         if (err) reject("Error while cloning Olum template \n" + err);
-        console.log(colors.green.bold(`Cloned "${this.template}" to current directory.`));
+        console.log(colors.green.bold(`Cloned "${template}" to current directory.`));
         resolve();
       });
     });
@@ -69,5 +57,4 @@ class CLI {
     });
   }
 }
-
 new CLI();

@@ -1,9 +1,11 @@
 {
   "name": "olum-cli",
   "version": "0.0.1",
-  "description": "Olumjs cli tool",
-  "main": "index.js",
-  "directories": {},
+  "description": "A CLI tool for olumjs",
+  "main": "bin/olum.js",
+  "bin": {
+    "olum": "./bin/olum.js"
+  },
   "scripts": {},
   "repository": {
     "type": "git",
@@ -11,8 +13,8 @@
   },
   "keywords": [
     "npm",
-    "olum",
-    "cli"
+    "cli",
+    "olum"
   ],
   "author": "Eissa Saber",
   "license": "MIT",
@@ -25,8 +27,5 @@
   "bugs": {
     "url": "https://github.com/eissapk/olum-cli/issues"
   },
-  "homepage": "https://github.com/eissapk/olum-cli#readme",
-  "bin": {
-    "execute": "index.js"
-  }
+  "homepage": "https://github.com/eissapk/olum-cli#readme"
 }
