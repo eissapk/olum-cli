@@ -1,4 +1,11 @@
 #!/usr/bin/env node
+/**
+ * @name Compiler.js
+ * @version 0.0.3
+ * @copyright 2021
+ * @author Eissa Saber
+ * @license MIT
+ */
 const commander = require("commander");
 const cmd = new commander.Command();
 const sass = require("sass");

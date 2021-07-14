@@ -1,3 +1,10 @@
+/**
+ * @name Devtool.js
+ * @version 0.0.3
+ * @copyright 2021
+ * @author Eissa Saber
+ * @license MIT
+ */
 const isObj = obj => !!(obj !== null && typeof obj === "object");
 const isFullArr = arr => !!(isObj(arr) && Array.isArray(arr) && arr.length);
 const hasProp = (obj, key) => !!obj.hasOwnProperty(key);
