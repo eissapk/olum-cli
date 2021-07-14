@@ -3,4 +3,12 @@
 # Olum-CLI
 > A CLI tool for olumjs
 
-[See Documentation](https://github.com/eissapk/olum#readme)
+### Installation
+```bash
+npm i -g olum-cli
+```
+
+### Create project
+```bash
+olum create my-project
+```
