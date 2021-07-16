@@ -5,27 +5,27 @@
  <img src="https://img.shields.io/npm/l/olum-cli" alt="npm">
 </p>
 
-### Installation
+#### Installation
 ```bash
 npm i -g olum-cli
 ```
 
-### Create project
+#### Create project
 ```bash
 olum create my-project
 ```
 
-### Navigate to project
+#### Navigate to project
 ```bash
 cd my-project
 ```
 
-### Build in dev mode
+#### Build in dev mode
 ```bash
 npm run dev
 ```
 
-### Build for deployment
+#### Build for deployment
 ```bash
 npm run build
 ```
