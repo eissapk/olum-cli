@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @name Olum-cli.js
- * @version 0.0.4
+ * @version 0.0.5
  * @copyright 2021
  * @author Eissa Saber
  * @license MIT
