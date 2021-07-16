@@ -32,11 +32,11 @@ class CLI {
   }
 
   clone(name) {
-    const template = path.resolve(__dirname, "../template");
+    const boilerplate = path.resolve(__dirname, "../boilerplate");
     return new Promise((resolve, reject) => {
-      extra.copy(template, `./${name}`, err => {
-        if (err) reject("Error while cloning Olum template \n" + err);
-        console.log(colors.green.bold(`Cloned "${template}" to current directory.`));
+      extra.copy(boilerplate, `./${name}`, err => {
+        if (err) reject("Error while creating Olum boilerplate \n" + err);
+        console.log(colors.green.bold(`Created "boilerplate" in current directory.`));
         resolve();
       });
     });
@@ -47,7 +47,7 @@ class CLI {
       if (shell.exec(`cd ${name} && git init`).code !== 0) {
         reject("Error while creating git repo!");
       } else {
-        console.log(colors.green.bold("Created Git Repo."));
+        console.log(colors.green.bold("Initialized Git Repo."));
         resolve();
       }
     });
@@ -58,7 +58,7 @@ class CLI {
       if (shell.exec(`cd ${name} && npm i`).code !== 0) {
         reject("Error while installing dependencies!");
       } else {
-        console.log(colors.green.bold("Installed dependencies."));
+        console.log(colors.green.bold("Finished installing modules."));
         resolve();
       }
     });
