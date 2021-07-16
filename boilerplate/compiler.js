@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @name Compiler.js
- * @version 0.0.3
+ * @version 0.0.5
  * @copyright 2021
  * @author Eissa Saber
  * @license MIT
