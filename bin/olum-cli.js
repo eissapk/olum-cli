@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @name Olum-cli.js
- * @version 0.0.3
+ * @version 0.0.4
  * @copyright 2021
  * @author Eissa Saber
  * @license MIT
@@ -24,7 +24,7 @@ class CLI {
       await this.clone(name);
       await this.git(name);
       await this.dep(name);
-      console.log(colors.blue("Build: npm run build\n" + "DevServer: npm run dev"));
+      console.log(colors.blue.bold("Build in dev mode: npm run dev\n" + "Build for deployment: npm run build" ));
       console.log(colors.cyan("cd " + name));
     } catch (err) {
       console.error(colors.red(err));
@@ -64,4 +64,5 @@ class CLI {
     });
   }
 }
+
 new CLI();

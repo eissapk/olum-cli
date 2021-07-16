@@ -1,10 +1,10 @@
 {
   "name": "olum-cli",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A CLI tool for olumjs",
-  "main": "bin/olum.js",
+  "main": "bin/olum-cli.js",
   "bin": {
-    "olum": "./bin/olum.js"
+    "olum": "./bin/olum-cli.js"
   },
   "scripts": {},
   "repository": {
