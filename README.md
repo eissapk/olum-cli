@@ -1,7 +1,9 @@
 <p align="center"><img width="100" src="https://eissa.xyz/olumjs/logo.png" alt="Olum logo"></p>
 
 # olum-cli
-> A CLI tool for olumjs
+> A CLI tool for olumjs 
+
+[npm](https://www.npmjs.com/package/olum-cli)
 
 ### Getting Started
 #### Installation
