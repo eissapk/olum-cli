@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
  * @name Olum-cli.js
- * @version 0.0.5
  * @copyright 2021
  * @author Eissa Saber
  * @license MIT
  */
 const commander = require("commander");
 const cmd = new commander.Command();
+const fs = require("fs");
 const extra = require("fs-extra");
 const path = require("path");
 const colors = require("colors");
@@ -24,14 +24,30 @@ const signature = `
 
 class CLI {
   constructor() {
-    cmd.version("0.0.5").description(colors.magenta.bold(signature));
-    cmd.on('command:*', operands => {
-      console.error(colors.red(`error: unknown command '${operands[0]}'\n Try running olum --help`));
-      process.exitCode = 1;
+    this.getPackageJSON()
+      .then(obj => {
+        cmd.version(obj.version).description(colors.magenta.bold(signature + "\n" + obj.description));
+        cmd.on("command:*", operands => {
+          console.error(colors.red(`error: unknown command '${operands[0]}'\n Try running olum --help`));
+          process.exitCode = 1;
+        });
+        cmd.on("--help", this.guide.bind(this));
+        cmd.command("create").arguments("<name>").action(this.create.bind(this));
+        cmd.parse(process.argv);
+      })
+      .catch(err => console.error(colors.red(err)));
+  }
+
+  getPackageJSON() {
+    // PACKAGE_VERSION=$(sed -nE 's/^\s*"version": "(.*?)",$/\1/p' package.json)
+    // echo $PACKAGE_VERSION
+    const file = path.resolve(__dirname, "../package.json");
+    return new Promise((resolve, reject) => {
+      fs.readFile(file, "utf8", (err, data) => {
+        if (err) return reject(err);
+        resolve(JSON.parse(data));
+      });
     });
-    cmd.on("--help", this.guide.bind(this));
-    cmd.command("create").arguments("<name>").action(this.create.bind(this));
-    cmd.parse(process.argv);
   }
 
   guide() {
@@ -99,7 +115,6 @@ class CLI {
       console.error(colors.red(err));
     }
   }
-
 }
 
 new CLI();
