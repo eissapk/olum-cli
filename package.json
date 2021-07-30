@@ -1,10 +1,10 @@
 {
   "name": "olum-cli",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "A CLI tool for olumjs",
-  "main": "bin/olum-cli.js",
+  "main": "bin/index.js",
   "bin": {
-    "olum": "./bin/olum-cli.js"
+    "olum": "./bin/index.js"
   },
   "scripts": {},
   "repository": {
@@ -27,5 +27,52 @@
   "bugs": {
     "url": "https://github.com/olumjs/olum-cli/issues"
   },
-  "homepage": "https://github.com/olumjs/olum-cli#readme"
+  "homepage": "https://github.com/olumjs/olum-cli#readme",
+  "olum_guide": {
+    "signature": [
+      "\n  ┌─┬┐┌┬┬─┬─┐┌─┬┐┌──┐┌──┬─┬─┬┐\n  ││││││││││││┌┤│└││┘└┐┌┤│││││\n  │││└┤│││││││└┤└┬││┐ │││││││└┐\n  └─┴─┴─┴┴─┴┘└─┴─┴──┘ └┘└─┴─┴─┘\n",
+      "\n  ┌───┬┐  ┌┐ ┌┬─┐┌─┐┌───┬┐  ┌──┐┌────┬───┬───┬┐\n  │┌─┐││  ││ │││└┘│││┌─┐││  └┤├┘│┌┐┌┐│┌─┐│┌─┐││\n  ││ │││  ││ ││┌┐┌┐│││ └┤│   ││ └┘││└┤│ │││ │││\n  ││ │││ ┌┤│ │││││││││ ┌┤│ ┌┐││   ││ ││ │││ │││ ┌┐\n  │└─┘│└─┘│└─┘│││││││└─┘│└─┘├┤├┐  ││ │└─┘│└─┘│└─┘│\n  └───┴───┴───┴┘└┘└┘└───┴───┴──┘  └┘ └───┴───┴───┘\n"
+    ],
+    "docs": {
+      "title": "See documentation",
+      "url": "https://olumjs.github.io/docs"
+    },
+    "colors": {
+      "title": [
+        "red",
+        "blue",
+        "yellow",
+        "magenta",
+        "green"
+      ],
+      "command": "cyan"
+    },
+    "commands": {
+      "title": "Available commands:",
+      "create": {
+        "cmd": "olum create my-app",
+        "desc": " Creates boilerplate in your current directory."
+      },
+      "version": {
+        "cmd": "olum --version",
+        "desc": "     Outputs Olum CLI version."
+      },
+      "help": {
+        "cmd": "olum --help",
+        "desc": "        Lists available commands."
+      },
+      "update": {
+        "cmd": "npm i -g olum-cli",
+        "desc": "  Updates Olum CLI tool on your machine."
+      },
+      "dev": {
+        "cmd": "npm run dev",
+        "desc": "        Creates development server, must be run from the root of olum app."
+      },
+      "build": {
+        "cmd": "npm run build",
+        "desc": "      Builds your Olum app for deployment, must be run from the root of olum app."
+      }
+    }
+  }
 }

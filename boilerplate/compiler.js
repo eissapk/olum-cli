@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * @name Compiler.js
- * @version 0.0.5
+ * @version 0.0.6
  * @copyright 2021
  * @author Eissa Saber
  * @license MIT
@@ -19,10 +19,10 @@ const colors = require("colors");
 const settings = require("./settings");
 
 // helpers
-const isDebugging = false;
+const isDebugging = true;
 const debugLib = arg => (isDebugging ? console.log(arg) : "");
 const quotes = (msg, color = "grey") => `'${colors[color].bold(msg)}'`;
-const log = (type, path, err) => quotes(`${type} : ${path.replace(this.sub, "src")}`, "white") + "\n" + colors.red.bold(err);
+const log = (type, path, err) => quotes(`${type} : ${path.replace(settings.src, "src")}`, "white") + "\n" + colors.red.bold(err);
 const isObj = obj => !!(obj !== null && typeof obj === "object");
 const isFullArr = arr => !!(isObj(arr) && Array.isArray(arr) && arr.length);
 const isDef = val => !!(val !== undefined && val !== null);
@@ -35,7 +35,6 @@ const mkRegex = arr => {
 
 class Compiler {
   viewsDirs = ["components", "views"];
-  sub = settings.src;
   regex = {
     template: {
       all: /<template[\s\S]*?>[\s\S]*?<\/template>/gi,
@@ -54,7 +53,7 @@ class Compiler {
   };
 
   constructor() {
-    cmd.command("clean").action(this.clean.bind(this));
+    cmd.command("clean [dir]").action(this.clean.bind(this));
     cmd.command("compile [mode]").action(this.init.bind(this));
     cmd.parse(process.argv);
   }
@@ -83,7 +82,7 @@ class Compiler {
           files.forEach((file, ind) => {
             const lastFile = files[files.length-1];
             const item = path.join(dir, file);
-            if (!fs.statSync(item).isDirectory()) this.paths.push(item.trim().replace(/^src/, this.sub)); // push files only and exclude directories
+            if (!fs.statSync(item).isDirectory()) this.paths.push(item.trim().replace(/^src/, settings.src)); // push files only and exclude directories
             if (directories.indexOf(lastDir) === index && files.indexOf(lastFile) === ind) {
               const msg = `Created ${quotes("Paths", "blue")} Tree.`;
               debugLib(msg);
@@ -97,24 +96,35 @@ class Compiler {
     });
   }
 
-  clean() {
+  clean(dir) {
     return new Promise((resolve, reject) => {
-      if (fs.existsSync(this.sub)) { // if folder exists
-        extra.remove(path.resolve(__dirname, this.sub), err => {
-          if (err) return reject(err);
-          const msg = `Deleted ${quotes(this.sub, "red")} Directory.`;
-          debugLib(msg);
-          resolve();
-        });
-      } else resolve();
+      if (dir === "src") { // clean src folder which is ".pre-build"
+        if (fs.existsSync(settings.src)) { // if folder exists
+          extra.remove(path.resolve(__dirname, settings.src), err => {
+            if (err) return reject(err);
+            const msg = `Deleted ${quotes(settings.src, "red")} Directory.`;
+            debugLib(msg);
+            resolve();
+          });
+        } else resolve();
+      } else if (dir === "dest") { // clean dest folder which is "build"
+        if (fs.existsSync(settings.dest)) { // if folder exists
+          extra.remove(path.resolve(__dirname, settings.dest), err => {
+            if (err) return reject(err);
+            const msg = `Deleted ${quotes(settings.dest, "red")} Directory.`;
+            debugLib(msg);
+            resolve();
+          });
+        } else resolve();
+      }
     });
   }
 
   copy() {
     return new Promise((resolve, reject) => {
-      extra.copy(path.resolve(__dirname, "src"), path.resolve(__dirname, this.sub), err => {
+      extra.copy(path.resolve(__dirname, "src"), path.resolve(__dirname, settings.src), err => {
         if (err) return reject(err);
-        const msg = `Copied & renamed ${quotes("src", "green")} Directory → ${quotes(this.sub, "yellow")}`;
+        const msg = `Copied & renamed ${quotes("src", "green")} Directory → ${quotes(settings.src, "yellow")}`;
         debugLib(msg);
         resolve();
       });
@@ -165,7 +175,7 @@ class Compiler {
     let arr = string.match(regex);
     arr = isFullArr(arr) ? arr : [];
     arr.forEach(item => {
-      debugLib(`Stringified template litrals placeholder ${quotes(item, "red")} in <style> : ${quotes(file.trim().replace(this.sub, "src"), "yellow")}`);
+      debugLib(`Stringified template litrals placeholder ${quotes(item, "red")} in <style> : ${quotes(file.trim().replace(settings.src, "src"), "yellow")}`);
       string = string.replace(regex, `"$1"`);
     });
     return string;
@@ -177,7 +187,7 @@ class Compiler {
     let arr = string.match(regex);
     arr = isFullArr(arr) ? arr : [];
     arr.forEach(item => {
-      debugLib(`Parsed template litrals placeholder ${quotes(item, "green")} in <style> : ${quotes(file.trim().replace(this.sub, "src"), "yellow")}`);
+      debugLib(`Parsed template litrals placeholder ${quotes(item, "green")} in <style> : ${quotes(file.trim().replace(settings.src, "src"), "yellow")}`);
       string = string.replace(regex, "$2");
     });
     return string;
@@ -300,7 +310,7 @@ class Compiler {
 
     try {
       await this.getPaths("src");
-      await this.clean();
+      await this.clean("src");  // clean src folder which is ".pre-build"
       await this.copy();
       const shared = await this.sharedStyle();
       const compiledShared = await this.compiledSharedStyle(shared);
