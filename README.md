@@ -5,5 +5,5 @@
  <img src="https://img.shields.io/npm/l/olum-cli" alt="npm">
 </p>
 
-## Olum-CLI
+# Olum-CLI
 See [Documentation](https://olumjs.github.io/docs)
