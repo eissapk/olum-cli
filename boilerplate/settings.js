@@ -13,7 +13,7 @@ module.exports = {
   template: "./public/index.html",
   serviceWorker: true,
   manifest: {
-    name: "Olum App PWA",
+    name: "Olum App",
     short_name: "Olum App",
     description: "Olum Progressive Web App",
     background_color: "#ffffff",

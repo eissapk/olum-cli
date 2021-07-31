@@ -19,7 +19,7 @@ const colors = require("colors");
 const settings = require("./settings");
 
 // helpers
-const isDebugging = true;
+const isDebugging = false;
 const debugLib = arg => (isDebugging ? console.log(arg) : "");
 const quotes = (msg, color = "grey") => `'${colors[color].bold(msg)}'`;
 const log = (type, path, err) => quotes(`${type} : ${path.replace(settings.src, "src")}`, "white") + "\n" + colors.red.bold(err);
