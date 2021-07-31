@@ -2,7 +2,9 @@ const path = require("path");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const { title, dest, favicon, template, src, hash, comments, asyncAwait } = require("./settings");
+const WorkboxPlugin = require("workbox-webpack-plugin");
+const WebpackPwaManifest = require('webpack-pwa-manifest');
+const { title, dest, favicon, template, src, hash, comments, asyncAwait, serviceWorker, manifest } = require("./settings");
 
 module.exports = env => {
   const mode = !!env.dev ? "development" : "production";
@@ -47,6 +49,10 @@ module.exports = env => {
 
   if (mode === "production") {
     config.optimization = { minimize: true, minimizer: [new TerserPlugin({ extractComments: comments })] };
+    if (serviceWorker) {
+      config.plugins.push(new WorkboxPlugin.GenerateSW({ clientsClaim: true, skipWaiting: true }));
+      config.plugins.push(new WebpackPwaManifest(manifest));
+    }
   }
 
   return config;

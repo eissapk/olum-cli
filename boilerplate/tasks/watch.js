@@ -6,12 +6,13 @@ import logger from "./logger";
 
 const watcher = gulp.watch(["./src/**/*"]);
 const taskName = "watch";
-let timeout;
+const watchSequence = [];
 
 const sequence = () => {
   console.log(colors.bgRed.white(taskName));
-  if (typeof timeout != "undefined") clearTimeout(timeout);
-  timeout = setTimeout(() => compile("development").then(() => bundle("development")), 1000);
+  watchSequence.forEach(clearTimeout); // clear watch sequence
+  const timeout = setTimeout(() => compile("development").then(() => bundle("development")), 1000);
+  watchSequence.push(timeout);
 };
 
 const watch = () => {
