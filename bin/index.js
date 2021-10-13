@@ -10,7 +10,7 @@ const cmd = new commander.Command();
 const extra = require("fs-extra");
 const path = require("path");
 const colors = require("colors");
-const shell = require("shelljs");
+const { exec } = require("child_process");
 const pkgJSON = require("../package.json");
 
 // helpers
@@ -19,7 +19,6 @@ const isFullArr = arr => !!(isObj(arr) && Array.isArray(arr) && arr.length);
 const isDef = val => !!(val !== undefined && val !== null);
 
 class CLI {
-
   constructor() {
     cmd.version(pkgJSON.version);
     cmd.on("command:*", operands => {
@@ -74,21 +73,19 @@ class CLI {
 
   git(name) {
     return new Promise((resolve, reject) => {
-      if (shell.exec(`cd ${name} && git init`).code !== 0) {
-        reject("Error while creating git repo!");
-      } else {
+      exec(`cd ${name} && git init`, (error, stdout, stderr) => {
+        if (error || stderr) return reject("Error while creating git repo!");
         resolve();
-      }
+      });
     });
   }
 
   dep(name) {
     return new Promise((resolve, reject) => {
-      if (shell.exec(`cd ${name} && npm i`).code !== 0) {
-        reject("Error while installing dependencies!");
-      } else {
+      exec(`cd ${name} && npm i`, (error, stdout, stderr) => {
+        if (error || stderr) return reject("Error while installing dependencies!");
         resolve();
-      }
+      });
     });
   }
 
@@ -99,12 +96,26 @@ class CLI {
     console.log("Production mode 👉 " + colors.cyan("npm run build\n"));
   }
 
+  loader(msg) {
+    if (typeof this.interval != "undefined") clearInterval(this.interval);
+    const loader = ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"];
+    let x = 0;
+    this.interval = setInterval(() => {
+      if (x < loader.length - 1) x++;
+      else x = 0;
+      process.stdout.write("\r" + msg + " " + loader[x]);
+    }, 100);
+  }
+
   async create(name) {
     try {
-      console.log(colors.green.bold(`Generating boilerplate...`));
+      // this.loader("Generating boilerplate");
+      console.log(colors.green.bold("Generating boilerplate..."));
       await this.clone(name);
+      // this.loader("Initializing git repository");
       console.log(colors.green.bold("Initializing git repository..."));
       await this.git(name);
+      // this.loader("Installing packages");
       console.log(colors.green.bold("Installing packages..."));
       await this.dep(name);
       this.postInstall(name);

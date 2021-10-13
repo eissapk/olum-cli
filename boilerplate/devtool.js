@@ -104,7 +104,7 @@ export default class DevTool {
       }
       .DevTool__body::-webkit-scrollbar-thumb {
         box-shadow: none;
-        background: #6557e0;
+        background: #61cd4b;
         border-radius: 5px;
       }
       .DevTool__body::-webkit-scrollbar-track {
@@ -144,12 +144,12 @@ export default class DevTool {
         color: #c1c1c1;
       }
       .DevTool__body__root .line .name {
-        color: #6557e0;
+        color: #61cd4b;
         margin: 0 1px;
         letter-spacing: 0.4px;
       }
       .DevTool__body__root .line .view {
-        background: #fc4055;
+        background: #ff853e;
         padding: 0 5px;
         border-radius: 5px;
         color: white;
@@ -184,7 +184,7 @@ export default class DevTool {
         height: 100%;
         top: 0;
         left: 0;
-        background: #6557e0;
+        background: #61cd4b;
         z-index: -1;
         border-radius: 5px;
         opacity: 0;

@@ -1,4 +1,7 @@
 node_modules
 package-lock.json
-.pre-build
 build
+.pre-build
+desktop
+nwjs
+.vscode
