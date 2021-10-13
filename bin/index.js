@@ -74,7 +74,7 @@ class CLI {
   git(name) {
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && git init`, (error, stdout, stderr) => {
-        if (error || stderr) return reject("Error while creating git repo!");
+        if (error) return reject("Error while creating git repo!");
         resolve();
       });
     });
@@ -83,7 +83,7 @@ class CLI {
   dep(name) {
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && npm i`, (error, stdout, stderr) => {
-        if (error || stderr) return reject("Error while installing dependencies!");
+        if (error) return reject("Error while installing dependencies!");
         resolve();
       });
     });
