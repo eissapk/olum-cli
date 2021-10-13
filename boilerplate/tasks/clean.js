@@ -1,13 +1,15 @@
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import logger from "./logger";
 
 const clean = dir => {
   const taskName = "clean";
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     logger(taskName, "start");
-    execSync(`node compiler.js clean ${dir}`);
-    logger(taskName, "end");
-    resolve();
+    exec(`node compiler.js clean ${dir}`, (error, stdout, stderr) => {
+      if (error) return reject();
+      resolve();
+      logger(taskName, "end");
+    });
   });
 };
 

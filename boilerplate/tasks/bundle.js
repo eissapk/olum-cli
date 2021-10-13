@@ -1,18 +1,23 @@
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import logger from "./logger";
 import reload from "./reload";
 
 const bundle = mode => {
   const taskName = "bundle";
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     logger(taskName, "start");
     if (mode === "development") {
-      execSync("webpack --env dev");
-      reload();
+      exec("webpack --env dev", (error, stdout, stderr) => {
+        // if (stderr) return reject();
+        reload();
+        resolve();
+      });
     } else if (mode === "production") {
-      execSync("webpack");
+      exec("webpack", (error, stdout, stderr) => {
+        // if (stderr) return reject();
+        resolve();
+      });
     }
-    resolve();
     logger(taskName, "end");
   });
 };

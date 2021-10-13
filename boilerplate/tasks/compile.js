@@ -1,16 +1,21 @@
-import { exec, execSync } from "child_process";
+import { exec } from "child_process";
 import logger from "./logger";
 
 const compile = mode => {
   const taskName = "compile";
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     logger(taskName, "start");
     if (mode === "development") {
-      execSync("node compiler.js compile dev");
+      exec("node compiler.js compile dev", (error, stdout, stderr) => {
+        if (error) return reject();
+        resolve();
+      });
     } else if (mode === "production") {
-      execSync("node compiler.js compile");
+      exec("node compiler.js compile", (error, stdout, stderr) => {
+        if (error) return reject();
+        resolve();
+      });
     }
-    resolve();
     logger(taskName, "end");
   });
 };
