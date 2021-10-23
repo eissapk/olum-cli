@@ -1,14 +1,17 @@
 {
   "name": "olum-app",
-  "version": "1.0.0",
-  "description": "The VanillaJS developer’s platform.",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Olum App",
   "main": "tasks",
   "scripts": {
     "dev": "gulp dev --require babel-polyfill --require @babel/register --gulpfile tasks",
     "build": "gulp build --require babel-polyfill --require @babel/register --gulpfile tasks"
   },
-  "keywords": ["olum"],
-  "author": "John Doe",
+  "keywords": [
+    "olum"
+  ],
+  "author": "olum",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -39,9 +42,68 @@
     "webpack": "^5.11.0",
     "webpack-cli": "^4.5.0",
     "webpack-pwa-manifest": "^4.3.0",
-    "workbox-webpack-plugin": "^6.1.5"
+    "workbox-webpack-plugin": "^6.1.5",
+    "copy-webpack-plugin": "^9.0.1"
   },
   "dependencies": {
-    "olum": "latest"
+    "olum": "latest",
+    "olum-router": "latest",
+    "olum-helpers": "latest"
+  },
+  "browserslist": [
+    "last 2 version",
+    "> 1%",
+    "not dead"
+  ],
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-class-properties"
+      ],
+      "@babel/plugin-syntax-dynamic-import"
+    ]
+  },
+  "olum": {
+    "dest": "build",
+    "src": ".pre-build",
+    "port": 8000,
+    "livereload": true,
+    "fallback": "/",
+    "comments": false,
+    "hash": 5,
+    "title": "Olum App",
+    "polyfill": false,
+    "assetAsModule": true,
+    "https": false,
+    "favicon": "./public/favicon.png",
+    "template": "./public/index.html",
+    "serviceWorker": false,
+    "manifest": {
+      "name": "Olum App",
+      "short_name": "Olum App",
+      "description": "Olum App",
+      "background_color": "#ffffff",
+      "publicPath": "./",
+      "display": "standalone",
+      "orientation": "any",
+      "start_url": "index.html",
+      "theme_color": "#ffffff",
+      "icons": [
+        {
+          "src": "./public/manifest.png",
+          "sizes": [
+            96,
+            128,
+            192,
+            256,
+            384,
+            512
+          ]
+        }
+      ]
+    }
   }
 }

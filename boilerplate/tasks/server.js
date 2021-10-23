@@ -1,6 +1,6 @@
 import connect from "gulp-connect";
 import logger from "./logger";
-import { dest, port, livereload, https, fallback } from "../settings";
+import {olum as settings} from "../package.json";
 
 const server = () => {
   const taskName = "server";
@@ -8,11 +8,11 @@ const server = () => {
     try {
       logger(taskName, "start");
       const options = {
-        root: `./${dest}`,
-        port: process.env.PORT || port,
-        livereload,
-        https,
-        fallback: `./${dest + fallback}`,
+        root: `./${settings.dest}`,
+        port: process.env.PORT || settings.port,
+        livereload: settings.livereload,
+        https: settings.https,
+        fallback: `./${settings.dest + settings.fallback}`,
       };
       connect.server(options);
       logger(taskName, "end");

@@ -1,18 +1,17 @@
 <template>
-  <div class="Home">
+  <div class="About">
     <Nav />
-    <HelloWorld />
+    <h2>About Page</h2>
   </div>
 </template>
 
 <script>
-  import HelloWorld from "../components/helloworld";
   import Nav from "../components/nav";
-  export default class Home {
+  export default class About {
     data() {
       return {
-        name: "Home",
-        components: { Nav, HelloWorld  },
+        name: "About",
+        components: { Nav },
         template: this.template(),
         style: this.style(),
         render: this.render.bind(this),
@@ -24,9 +23,13 @@
 </script>
 
 <style lang="scss">
-  .Home {
+  .About {
     width: 100vw;
     height: 100vh;
     background-color: #2b2a3e;
+    h2 {
+      color: white;
+      text-align: center;
+    }
   }
 </style>

@@ -16,7 +16,7 @@ const fs = require("fs");
 const extra = require("fs-extra");
 const path = require("path");
 const colors = require("colors");
-const settings = require("./settings");
+const settings = require("./package.json").olum;
 
 // helpers
 const isDebugging = true;

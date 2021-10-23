@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import fs from "fs";
 import path from "path";
-import settings from "../settings";
+import {olum as settings} from "../package.json";
 
 // Questions
 const q1 = { type: "confirm", name: "catch", message: "Do you want to catch all routes to fall back to root" };

@@ -1,12 +1,12 @@
 import inquirer from "inquirer";
 import fs from "fs";
 import path from "path";
-import settings from "../settings";
 import extra from "fs-extra";
 import colors from "colors";
 import decompress from "decompress";
 import { exec } from "child_process";
 import packageJSON from "../package.json";
+const settings = packageJSON.olum;
 
 const q1 = { type: "confirm", name: "nwjs", message: "NWjs is ready" };
 

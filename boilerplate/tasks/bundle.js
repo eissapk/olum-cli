@@ -11,14 +11,15 @@ const bundle = mode => {
         // if (stderr) return reject();
         reload();
         resolve();
+        logger(taskName, "end");
       });
     } else if (mode === "production") {
       exec("webpack", (error, stdout, stderr) => {
         // if (stderr) return reject();
         resolve();
+        logger(taskName, "end");
       });
     }
-    logger(taskName, "end");
   });
 };
 

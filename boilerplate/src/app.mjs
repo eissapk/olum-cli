@@ -1,14 +1,9 @@
-import { Olum } from "olum";
+import Olum from "olum";
+import router from "./router/index.js";
 import Home from "./views/home.js";
 
-const routes = [{ path: "/", comp: Home }];
-
-export const olum = new Olum({
-  mode: "history",
-  root: "/",
-  el: "#app",
-  routes,
-});
+// new Olum().$("#app").use(Home); // use root component
+new Olum().$("#app").use(router); // use router
 
 // if ("serviceWorker" in navigator) { // uncomment to enable service worker when deploying
 //   window.on("load", () => navigator.serviceWorker.register("/service-worker.js").catch(console.error));
