@@ -1,7 +1,8 @@
 #!/usr/bin/env node
+
 /**
  * @name Compiler.js
- * @version 0.0.6
+ * @version 0.0.7
  * @copyright 2021
  * @author Eissa Saber
  * @license MIT
@@ -19,7 +20,7 @@ const colors = require("colors");
 const settings = require("./package.json").olum;
 
 // helpers
-const isDebugging = true;
+const isDebugging = false;
 const debugLib = arg => (isDebugging ? console.log(arg) : "");
 const quotes = (msg, color = "grey") => `'${colors[color].bold(msg)}'`;
 const log = (type, path, err) => quotes(`${type} : ${path.replace(settings.src, "src")}`, "white") + "\n" + colors.red.bold(err);
@@ -39,11 +40,12 @@ class Compiler {
     template: {
       all: /<template[\s\S]*?>[\s\S]*?<\/template>/gi,
       tag: /<template[\s\S]*?>|<\/template>/gi,
+      component: /(?<=<)[A-Z]([^/>]+)(?=\/>)/g, // detect <App/> or <App-Nav/>
     },
     script: {
       all: /<script[\s\S]*?>[\s\S]*?<\/script>/gi,
       tag: /<script[\s\S]*?>|<\/script>/gi,
-      curlyAfterClass: /(?<=export.*class.*)(\{)/,
+      classStartPoint: /(class.*)(\{)/,
     },
     style: {
       all: /<style[\s\S]*?>[\s\S]*?<\/style>/gi,
@@ -63,15 +65,15 @@ class Compiler {
       const dirs = src => fs.readdirSync(src).map(item => path.join(src, item)).filter(item => fs.statSync(item).isDirectory());
       const recursive = src => [src, ...flatten(dirs(src).map(recursive))];
       const arr = recursive(base);
-      
+
       // get all dirs 
       const directories = [...arr].filter(item => {
-          const regex = mkRegex(this.viewsDirs);
-          const result = regex.test(item);
-          if (result) return item;
+        const regex = mkRegex(this.viewsDirs);
+        const result = regex.test(item);
+        if (result) return item;
       });
       if (!isFullArr(directories)) return reject("No directories found !");
-      const lastDir = directories[directories.length-1];
+      const lastDir = directories[directories.length - 1];
 
       // get all files 
       this.paths = [];
@@ -80,7 +82,7 @@ class Compiler {
           if (err) return reject(err);
 
           files.forEach((file, ind) => {
-            const lastFile = files[files.length-1];
+            const lastFile = files[files.length - 1];
             const item = path.join(dir, file);
             if (!fs.statSync(item).isDirectory()) this.paths.push(item.trim().replace(/^src/, settings.src)); // push files only and exclude directories
             if (directories.indexOf(lastDir) === index && files.indexOf(lastFile) === ind) {
@@ -89,7 +91,7 @@ class Compiler {
               resolve();
             }
           });
-          
+
         });
       });
 
@@ -152,7 +154,9 @@ class Compiler {
     return new Promise((resolve, reject) => {
       try {
         // compile sass to css 
-        const compiled = sass.renderSync({ data: shared }).css.toString();
+        const compiled = sass.renderSync({
+          data: shared
+        }).css.toString();
         const msg = `Compiled ${quotes("shared", "green")} Style.`;
         debugLib(msg);
         resolve(compiled);
@@ -202,7 +206,9 @@ class Compiler {
 
       try {
         // compile sass to css 
-        const css = this.hasSASS(style) ? sass.renderSync({ data: shared + scss }).css.toString() : compiledShared + scss;
+        const css = this.hasSASS(style) ? sass.renderSync({
+          data: shared + scss
+        }).css.toString() : compiledShared + scss;
 
         if (this.mode === "development") { // development
           const parsedDev = this.parse(css, file);
@@ -210,7 +216,9 @@ class Compiler {
 
         } else if (this.mode === "production") { // production
           // prefix & minify css
-          postcss([autoprefixer, cssnano]).process(css, { from: undefined }).then(result => {
+          postcss([autoprefixer, cssnano]).process(css, {
+            from: undefined
+          }).then(result => {
             result.warnings().forEach(warn => console.warn(colors.yellow.bold(warn.toString())));
             const parsedBuild = this.parse(result.css, file);
             resolve("\n style() { \n return `" + parsedBuild + "`;\n}\n");
@@ -238,7 +246,7 @@ class Compiler {
       const scriptArr = data.match(this.regex.script.all);
       const script = isFullArr(scriptArr) ? scriptArr[0] : ""; // get 1st script tag as the order of component file
       const js = script.replace(this.regex.script.tag, "");
-      const hasJsClass = this.regex.script.curlyAfterClass.test(js);
+      const hasJsClass = this.regex.script.classStartPoint.test(js);
       if (hasJsClass) resolve(js);
       else reject(log("JS Class", file, "Couldn't find a class or opening curly bracket e.g. class Example '{' is followed with code"));
     });
@@ -250,13 +258,82 @@ class Compiler {
     return file.replace(ext, "") + "js";
   }
 
-  merge(html, css, js) {
-    return new Promise(resolve => {
-      const file = js.replace(this.regex.script.curlyAfterClass, "{" + html + css);
-      resolve(file);
-    });
+  // start auto inject data method
+  getModuleName(str) {
+    return str.replace(/import|from|\;|("|').*("|')|\s/gi, "").trim();
+  }
+
+  getImportStatement(str) {
+    return str.match(/(import).*/g) || [];
   }
   
+  getClassName(js) {
+    let str = js.match(this.regex.script.classStartPoint)[0].replace(/\{/g, "");
+    let arr = str.split(" ");
+    arr = arr.filter(item => item.trim() != "");
+    const classIndex = arr.indexOf("class");
+    const name = arr[classIndex+1];
+    return name;
+  }
+  // end auto inject data method
+
+  merge(html, css, js) {
+    // start auto inject data method
+    const imports = this.getImportStatement(js); // get all import statements
+    const modulesNames = imports.map(statement => this.getModuleName(statement)); // extract modules names 
+    const components = html.match(this.regex.template.component) || []; // get components tags
+    const componentsNames = components.map(name => name.replace(/(.*)(\-)/, "").trim()); // remove prefix
+    const className = this.getClassName(js);
+
+    let dataMethod;
+    if (isFullArr(modulesNames) && isFullArr(componentsNames)) { // there are components
+      debugLib("components exist");
+      const finalNames = [];
+      modulesNames.forEach(moduleName => componentsNames.forEach(compName => (moduleName !== "" && moduleName === compName) ? finalNames.push(moduleName) : null));
+      dataMethod = `
+        data() {
+          return {
+            name: "${className}",
+            components: { ${finalNames.join(", ")} },
+            template: this.template(),
+            style: this.style(),
+            render: this.render.bind(this),
+          };
+        }
+      `;
+    } else { // NO components
+      debugLib("components DON'T exist");
+      dataMethod = `
+        data() {
+          return {
+            name: "${className}",
+            components: {},
+            template: this.template(),
+            style: this.style(),
+            render: this.render.bind(this),
+          };
+        }
+      `;
+    }
+
+    debugLib({ html });
+    debugLib({ componentsNames });
+    debugLib({ modulesNames });
+    debugLib({ dataMethod });
+    // end auto inject data method
+
+    return new Promise((resolve, reject) => {
+      let classSentence = js.match(this.regex.script.classStartPoint);
+      if (isFullArr(classSentence)) {
+        classSentence = classSentence[0];
+        const file = js.replace(classSentence, classSentence + dataMethod + html + css);
+        return resolve(file);
+      } else {
+        return reject("Couldn't find a JS Class");
+      }
+    });
+  }
+
   createFile(oldPath, newPath, compiledFile) {
     return new Promise((resolve, reject) => {
       fs.rename(oldPath, newPath, err => {
@@ -310,7 +387,7 @@ class Compiler {
 
     try {
       await this.getPaths("src");
-      await this.clean("src");  // clean src folder which is ".pre-build"
+      await this.clean("src"); // clean src folder which is ".pre-build"
       await this.copy();
       const shared = await this.sharedStyle();
       const compiledShared = await this.compiledSharedStyle(shared);

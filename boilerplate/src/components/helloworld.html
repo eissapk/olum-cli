@@ -15,16 +15,6 @@
   import logo from "/src/assets/logo.svg";
   import { $ } from "olum-helpers";
   export default class HelloWorld {
-    data() {
-      return {
-        name: "HelloWorld",
-        components: {},
-        template: this.template(),
-        style: this.style(),
-        render: this.render.bind(this),
-      };
-    }
-
     render() {
       let num = 0;
       const btn = $("button");
