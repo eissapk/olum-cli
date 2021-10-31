@@ -46,7 +46,7 @@ class CLI {
 
     const commands = `
     ${colors[randomColor](randomSignature)}
-    ${pkgJSON.description}
+    ${pkgJSON.description} @${pkgJSON.version}
 
     ${colors[randomColor](shorthand.commands.title)}
       ${colors[shorthand.colors.command](shorthand.commands.help.cmd)} ${shorthand.commands.help.desc}
@@ -65,7 +65,7 @@ class CLI {
   clone(name) {
     const boilerplate = path.resolve(__dirname, "../boilerplate");
     return new Promise((resolve, reject) => {
-      extra.copy(boilerplate, path.resolve(__dirname, `./${name}`), err => {
+      extra.copy(boilerplate, `./${name}`, err => {
         if (err) reject("Error while creating Olum boilerplate \n" + err);
         resolve();
       });
@@ -75,10 +75,7 @@ class CLI {
   git(name) {
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && git init && git add . && git commit -m "Initial Commit via Olum CLI"`, (error, stdout, stderr) => {
-        if (stdout.toLowerCase().includes("error")) console.log(colors.red.bold(stdout));
-        else if (stdout.trim() !== "") console.log(stdout);
         if (error) return reject(error);
-        if (stderr) return reject(stderr);
         resolve();
       });
     });
@@ -87,10 +84,7 @@ class CLI {
   dep(name) {
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && npm i`, (error, stdout, stderr) => {
-        if (stdout.toLowerCase().includes("error")) console.log(colors.red.bold(stdout));
-        else if (stdout.trim() !== "") console.log(stdout);
         if (error) return reject(error);
-        if (stderr) return reject(stderr);
         resolve();
       });
     });
@@ -245,8 +239,8 @@ dist
 
 # macOS
 .DS_Store`;
-      const file = path.resolve(__dirname, `./${name}/.gitignore`);
-      fs.writeFile(file, content, err => {
+
+      fs.writeFile(`./${name}/.gitignore`, content, err => {
         if (err) return reject(err);
         resolve();
       });
@@ -275,8 +269,7 @@ npm run build
 
 See [Documentation](https://olumjs.github.io/docs)`;
 
-      const file = path.resolve(__dirname, `./${name}/README.md`);
-      fs.writeFile(file, content, err => {
+      fs.writeFile(`./${name}/README.md`, content, err => {
         if (err) return reject(err);
         resolve();
       });
@@ -287,14 +280,14 @@ See [Documentation](https://olumjs.github.io/docs)`;
     try {
       console.log(colors.green.bold("Generating boilerplate..."));
       await this.clone(name);
-
-      console.log(colors.green.bold("Initializing git repository..."));
       await this.readme(name);
       await this.gitignore(name);
-      await this.git(name);
-      
+
       console.log(colors.green.bold("Installing packages..."));
       await this.dep(name);
+      
+      console.log(colors.green.bold("Initializing git repository..."));
+      await this.git(name);
       
       this.postInstall(name);
     } catch (err) {
