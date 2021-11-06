@@ -1,6 +1,6 @@
 {
   "name": "olum-cli",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "A CLI tool for olumjs",
   "main": "bin/index.js",
   "bin": {
@@ -28,23 +28,16 @@
     "url": "https://github.com/olumjs/olum-cli/issues"
   },
   "homepage": "https://github.com/olumjs/olum-cli#readme",
-  "olum_guide": {
+  "olum": {
     "signature": [
-      "\n  ┌─┬┐┌┬┬─┬─┐┌─┬┐┌──┐┌──┬─┬─┬┐\n  ││││││││││││┌┤│└││┘└┐┌┤│││││\n  │││└┤│││││││└┤└┬││┐ │││││││└┐\n  └─┴─┴─┴┴─┴┘└─┴─┴──┘ └┘└─┴─┴─┘\n",
-      "\n  ┌───┬┐  ┌┐ ┌┬─┐┌─┐┌───┬┐  ┌──┐┌────┬───┬───┬┐\n  │┌─┐││  ││ │││└┘│││┌─┐││  └┤├┘│┌┐┌┐│┌─┐│┌─┐││\n  ││ │││  ││ ││┌┐┌┐│││ └┤│   ││ └┘││└┤│ │││ │││\n  ││ │││ ┌┤│ │││││││││ ┌┤│ ┌┐││   ││ ││ │││ │││ ┌┐\n  │└─┘│└─┘│└─┘│││││││└─┘│└─┘├┤├┐  ││ │└─┘│└─┘│└─┘│\n  └───┴───┴───┴┘└┘└┘└───┴───┴──┘  └┘ └───┴───┴───┘\n"
+      "\n      oOOOo     o        o       o   oo    oo\n     o     o    O        O       O   O O  O O\n    O       O   O        O       O   O  oo  O\n    O       O   O        O       O   O      O\n    O       O   O        O       O   O      O\n     o     o    o         o     o    O      O\n      oOOOo     oOOOOo     oOOOo     o      o\n"
     ],
     "docs": {
       "title": "See documentation",
       "url": "https://olumjs.github.io/docs"
     },
     "colors": {
-      "title": [
-        "red",
-        "blue",
-        "yellow",
-        "magenta",
-        "green"
-      ],
+      "title": ["yellow"],
       "command": "cyan"
     },
     "commands": {

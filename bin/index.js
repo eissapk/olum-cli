@@ -37,7 +37,7 @@ class CLI {
   }
 
   guide() {
-    const shorthand = pkgJSON.olum_guide;
+    const shorthand = pkgJSON.olum;
     // title colors
     const titleArr = shorthand.colors.title;
     const randomColor = titleArr[this.random(titleArr)];
@@ -46,10 +46,10 @@ class CLI {
     const randomSignature = signatureArr[this.random(signatureArr)];
 
     const commands = `
-    ${colors[randomColor](randomSignature)}
+    ${colors[randomColor].bold(randomSignature)} 
     ${pkgJSON.description} @${pkgJSON.version}
 
-    ${colors[randomColor](shorthand.commands.title)}
+    ${colors[randomColor].bold(shorthand.commands.title)}
       ${colors[shorthand.colors.command](shorthand.commands.help.cmd)} ${shorthand.commands.help.desc}
       ${colors[shorthand.colors.command](shorthand.commands.version.cmd)} ${shorthand.commands.version.desc}
       ${colors[shorthand.colors.command](shorthand.commands.create.cmd)} ${shorthand.commands.create.desc}
@@ -57,13 +57,14 @@ class CLI {
       ${colors[shorthand.colors.command](shorthand.commands.dev.cmd)} ${shorthand.commands.dev.desc}
       ${colors[shorthand.colors.command](shorthand.commands.build.cmd)} ${shorthand.commands.build.desc}
 
-    ${colors[randomColor](shorthand.docs.title)} ${colors.cyan(shorthand.docs.url)}
+    ${colors[randomColor].bold(shorthand.docs.title)} ${colors.cyan(shorthand.docs.url)}
     `;
-
+    console.clear();
     console.log(commands);
   }
 
   clone(name, branch) {
+    this.loader("Generating boilerplate");
     const repo = "https://github.com/olumjs/olum-starter.git";
     return new Promise((resolve, reject) => {
       download(`direct:${repo}#${branch}`, `./${name}`, { clone: true }, err => {
@@ -87,46 +88,63 @@ class CLI {
   }
 
   git(name) {
+    this.loader("Initializing git repository");
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && git init && git add . && git commit -m "Initial Commit via Olum CLI"`, (error, stdout, stderr) => {
         if (error) return reject(error);
-        // console.log(stdout);
-        // console.log(stderr);
+        console.log(stdout);
+        console.log(stderr);
         resolve();
       });
     });
   }
 
   dep(name) {
+    this.loader("Installing packages");
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && npm i`, (error, stdout, stderr) => {
         if (error) return reject(error);
-        // console.log(stdout);
-        // console.log(stderr);
+        console.log(stdout);
+        console.log(stderr);
         resolve();
       });
     });
   }
 
   postInstall(name) {
-    console.log(colors.yellow.bold("\nHappy Hacking 😎"));
-    console.log("Navigate to project 👉 " + colors.cyan("cd " + name));
-    console.log("Run Development Server 👉 " + colors.cyan("npm run dev"));
-    console.log("Build for Production 👉 " + colors.cyan("npm run build\n"));
+    const cd = colors.cyan("cd "+name);
+    const dev = colors.cyan("npm run dev");
+    const build = colors.cyan("npm run build\n");
+    const border = colors.green.bold("───────────────");
+    const title = colors.green.bold("Happy Coding!");
+    const info = 
+    `
+    ${border}
+    
+      ${title}  
+
+      - Navigate to project:    ${cd}
+      - Run Development Server: ${dev}
+      - Build for Production:   ${build}
+    ${border}
+    `;
+    this.stopLoader();
+    console.clear();
+    console.log(info);
   }
 
   loader(msg) {
     if (typeof this.interval != "undefined") {
       clearInterval(this.interval);
-      process.stdout.write("\n");
+      console.log("\n");
     }
     const loader = ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"];
     let x = 0;
     this.interval = setInterval(() => {
       if (x < loader.length - 1) x++;
       else x = 0;
-      process.stdout.write("\r" + colors.cyan.bold(msg) + " " + colors.green.bold(loader[x]) + "    ");
-    }, 100);
+      process.stdout.write("\r" + colors.yellow.bold(msg) + " " + colors.yellow.bold(loader[x]) + "     ");
+    }, 50);
   }
   
   stopLoader() {
@@ -336,24 +354,21 @@ See [Documentation](https://olumjs.github.io/docs)`;
       // select modules
       const answer = await this.detect();
       
-      // starter code
-      this.loader("Generating boilerplate");
+      // generate boilerplate
       await this.clone(name, answer);
       await this.readme(name);
       await this.gitignore(name);
       
       // installing modules
-      this.loader("Installing packages");
       await this.dep(name);
       
       // init git repo
-      this.loader("Initializing git repository");
       await this.git(name);
       
       // instructions
       this.postInstall(name);
-      this.stopLoader();
     } catch (err) {
+      this.stopLoader();
       console.error(colors.red(err));
     }
   }
