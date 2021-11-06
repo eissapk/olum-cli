@@ -101,14 +101,15 @@ class CLI {
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && npm i`, (error, stdout, stderr) => {
         if (error) return reject(error);
-        console.log(stdout);
-        console.log(stderr);
+        // console.log(stdout);
+        // console.log(stderr);
         resolve();
       });
     });
   }
 
   postInstall(name) {
+    this.stopLoader();
     console.log(colors.yellow.bold("\nHappy Hacking 😎"));
     console.log("Navigate to project 👉 " + colors.cyan("cd " + name));
     console.log("Run Development Server 👉 " + colors.cyan("npm run dev"));
@@ -116,14 +117,21 @@ class CLI {
   }
 
   loader(msg) {
-    if (typeof this.interval != "undefined") clearInterval(this.interval);
+    if (typeof this.interval != "undefined") {
+      clearInterval(this.interval);
+      process.stdout.write("\n");
+    }
     const loader = ["⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷"];
     let x = 0;
     this.interval = setInterval(() => {
       if (x < loader.length - 1) x++;
       else x = 0;
-      process.stdout.write("\r" + msg + " " + loader[x]);
+      process.stdout.write("\r" + colors.cyan.bold(msg) + " " + colors.green.bold(loader[x]) + "    ");
     }, 100);
+  }
+  
+  stopLoader() {
+    if (typeof this.interval != "undefined") clearInterval(this.interval);
   }
   
   gitignore(name) {
@@ -330,20 +338,20 @@ See [Documentation](https://olumjs.github.io/docs)`;
       const answer = await this.detect();
       
       // starter code
-      console.log(colors.green.bold("Generating boilerplate..."));
+      this.loader("Generating boilerplate");
       await this.clone(name, answer);
       await this.readme(name);
       await this.gitignore(name);
-
+      
       // installing modules
-      console.log(colors.green.bold("Installing packages..."));
+      this.loader("Installing packages");
       await this.dep(name);
       
       // init git repo
-      console.log(colors.green.bold("Initializing git repository..."));
+      this.loader("Initializing git repository");
       await this.git(name);
       
-      // insctructions
+      // instructions
       this.postInstall(name);
     } catch (err) {
       console.error(colors.red(err));
