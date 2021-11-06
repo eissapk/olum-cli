@@ -109,7 +109,6 @@ class CLI {
   }
 
   postInstall(name) {
-    this.stopLoader();
     console.log(colors.yellow.bold("\nHappy Hacking 😎"));
     console.log("Navigate to project 👉 " + colors.cyan("cd " + name));
     console.log("Run Development Server 👉 " + colors.cyan("npm run dev"));
@@ -353,6 +352,7 @@ See [Documentation](https://olumjs.github.io/docs)`;
       
       // instructions
       this.postInstall(name);
+      this.stopLoader();
     } catch (err) {
       console.error(colors.red(err));
     }
