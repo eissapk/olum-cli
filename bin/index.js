@@ -7,8 +7,8 @@
  */
 const commander = require("commander");
 const cmd = new commander.Command();
-const extra = require("fs-extra");
-const path = require("path");
+const inquirer = require("inquirer");
+const download = require("download-git-repo");
 const fs = require("fs");
 const colors = require("colors");
 const { exec } = require("child_process");
@@ -20,6 +20,7 @@ const isFullArr = arr => !!(isObj(arr) && Array.isArray(arr) && arr.length);
 const isDef = val => !!(val !== undefined && val !== null);
 
 class CLI {
+  hasHelpers = false;
   constructor() {
     cmd.version(pkgJSON.version);
     cmd.on("command:*", operands => {
@@ -62,12 +63,25 @@ class CLI {
     console.log(commands);
   }
 
-  clone(name) {
-    const boilerplate = path.resolve(__dirname, "../boilerplate");
+  clone(name, branch) {
+    const repo = "https://github.com/olumjs/olum-starter.git";
     return new Promise((resolve, reject) => {
-      extra.copy(boilerplate, `./${name}`, err => {
-        if (err) reject("Error while creating Olum boilerplate \n" + err);
-        resolve();
+      download(`direct:${repo}#${branch}`, `./${name}`, { clone: true }, err => {
+        if (err) return reject("Error while cloning starter code \n" + err);
+        
+        if (this.hasHelpers) {
+          fs.readFile(`./${name}/package.json`, "utf8", (err, data) => {
+            if (err) return reject(err);
+            const content = JSON.parse(data);
+            content.dependencies["olum-helpers"] = "latest";
+            fs.writeFile(`./${name}/package.json`, JSON.stringify(content, null, 2), err => {
+              if (err) return reject(err);
+              return resolve();
+            });
+          });
+        }
+        
+        return resolve();
       });
     });
   }
@@ -76,6 +90,8 @@ class CLI {
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && git init && git add . && git commit -m "Initial Commit via Olum CLI"`, (error, stdout, stderr) => {
         if (error) return reject(error);
+        // console.log(stdout);
+        // console.log(stderr);
         resolve();
       });
     });
@@ -85,6 +101,8 @@ class CLI {
     return new Promise((resolve, reject) => {
       exec(`cd ${name} && npm i`, (error, stdout, stderr) => {
         if (error) return reject(error);
+        console.log(stdout);
+        console.log(stderr);
         resolve();
       });
     });
@@ -275,20 +293,57 @@ See [Documentation](https://olumjs.github.io/docs)`;
       });
     });
   }
-
+  
+  detect() {
+    return new Promise((resolve, reject) => {
+      const q1 = {
+        type: "checkbox",
+        name: "pkg",
+        message: "Select packages",
+        choices: [
+          { name: " olum-router", value: "router" },
+          { name: " olum-helpers", value: "helpers" },
+        ],
+      };
+      inquirer.prompt([q1]).then(res => {
+        const answer = res.pkg;
+        if (!answer.length) {
+          resolve("core");
+        } else {
+          if (answer.length === 1 && answer.includes("router")) {
+            resolve("router");
+          } else if (answer.length === 1 && answer.includes("helpers")) {
+            this.hasHelpers = true;
+            resolve("core");
+          } else if (answer.length > 1) {
+            this.hasHelpers = true;
+            resolve("router");
+          }
+        }
+      }).catch(reject);
+    });
+  }
+  
   async create(name) {
     try {
+      // select modules
+      const answer = await this.detect();
+      
+      // starter code
       console.log(colors.green.bold("Generating boilerplate..."));
-      await this.clone(name);
+      await this.clone(name, answer);
       await this.readme(name);
       await this.gitignore(name);
 
+      // installing modules
       console.log(colors.green.bold("Installing packages..."));
       await this.dep(name);
       
+      // init git repo
       console.log(colors.green.bold("Initializing git repository..."));
       await this.git(name);
       
+      // insctructions
       this.postInstall(name);
     } catch (err) {
       console.error(colors.red(err));
