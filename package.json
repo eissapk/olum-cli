@@ -1,6 +1,6 @@
 {
   "name": "olum-cli",
-  "version": "0.2.7",
+  "version": "0.2.9",
   "description": "A CLI tool for olumjs",
   "main": "bin/index.js",
   "bin": {
@@ -24,6 +24,9 @@
     "download-git-repo": "^3.0.2",
     "inquirer": "^8.2.0"
   },
+  "engines": {
+    "node": ">=14"
+  },
   "bugs": {
     "url": "https://github.com/olumjs/olum-cli/issues"
   },
@@ -37,7 +40,9 @@
       "url": "https://olumjs.github.io/docs"
     },
     "colors": {
-      "title": ["yellow"],
+      "title": [
+        "yellow"
+      ],
       "command": "cyan"
     },
     "commands": {
