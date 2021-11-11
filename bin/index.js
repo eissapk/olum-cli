@@ -413,7 +413,7 @@ See [Documentation](https://olumjs.github.io/docs)`;
       await this.gitignore(name);
       
       // installing modules
-      // await this.dep(name);
+      await this.dep(name);
       
       // init git repo
       await this.git(name);
