@@ -1,6 +1,6 @@
 {
   "name": "olum-cli",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A CLI tool for olumjs",
   "main": "bin/index.js",
   "bin": {
@@ -40,36 +40,42 @@
       "url": "https://olumjs.github.io/docs"
     },
     "colors": {
-      "title": [
-        "yellow"
-      ],
+      "title": ["red", "yellow", "blue"],
       "command": "cyan"
     },
     "commands": {
       "title": "Available commands:",
       "create": {
         "cmd": "olum create my-app",
-        "desc": " Creates boilerplate in your current directory."
+        "desc": "    Creates boilerplate with the name of 'my-app' in your current directory."
+      },
+      "generateComponent": {
+        "cmd": "olum generate -c home",
+        "desc": " Creates component file with the name of 'home' in the given path, 'generate' keyword can be 'g'"
+      },
+      "generateService": {
+        "cmd": "olum generate -s api",
+        "desc": "  Creates service file with the name of 'api' in the given path, 'generate' keyword can be 'g'"
       },
       "version": {
         "cmd": "olum --version",
-        "desc": "     Outputs Olum CLI version."
+        "desc": "        Outputs Olum CLI version."
       },
       "help": {
         "cmd": "olum --help",
-        "desc": "        Lists available commands."
+        "desc": "           Lists available commands."
       },
       "update": {
         "cmd": "npm i -g olum-cli",
-        "desc": "  Updates Olum CLI tool on your machine."
+        "desc": "     Updates Olum CLI tool on your machine."
       },
       "dev": {
         "cmd": "npm run dev",
-        "desc": "        Creates development server, must be run from the root of olum app."
+        "desc": "           Creates development server, must be run from the root of olum app."
       },
       "build": {
         "cmd": "npm run build",
-        "desc": "      Builds your Olum app for deployment, must be run from the root of olum app."
+        "desc": "         Builds your Olum app for deployment, must be run from the root of olum app."
       }
     }
   }

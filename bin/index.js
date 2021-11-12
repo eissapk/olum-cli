@@ -140,23 +140,27 @@ export default {{export}};`;
     // signature shapes
     const signatureArr = shorthand.signature;
     const randomSignature = signatureArr[this.random(signatureArr)];
+    
+    // loop to concat all commands
+    let commands = "";
+    for(let key in shorthand.commands) {
+      const cmd = shorthand.commands[key].cmd;
+      const desc = shorthand.commands[key].desc;
+      if (cmd && desc) commands += colors[shorthand.colors.command](cmd) + " " + desc + "\n      ";
+    }
 
-    const commands = `
+    const hint = 
+    `
     ${colors[randomColor].bold(randomSignature)} 
     ${pkgJSON.description} @${pkgJSON.version}
 
     ${colors[randomColor].bold(shorthand.commands.title)}
-      ${colors[shorthand.colors.command](shorthand.commands.help.cmd)} ${shorthand.commands.help.desc}
-      ${colors[shorthand.colors.command](shorthand.commands.version.cmd)} ${shorthand.commands.version.desc}
-      ${colors[shorthand.colors.command](shorthand.commands.create.cmd)} ${shorthand.commands.create.desc}
-      ${colors[shorthand.colors.command](shorthand.commands.update.cmd)} ${shorthand.commands.update.desc}
-      ${colors[shorthand.colors.command](shorthand.commands.dev.cmd)} ${shorthand.commands.dev.desc}
-      ${colors[shorthand.colors.command](shorthand.commands.build.cmd)} ${shorthand.commands.build.desc}
-
+      ${commands}
     ${colors[randomColor].bold(shorthand.docs.title)} ${colors.cyan(shorthand.docs.url)}
     `;
+    
     console.clear();
-    console.log(commands);
+    console.log(hint);
   }
 
   clone(name, branch) {
